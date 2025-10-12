@@ -1,3 +1,18 @@
+function checkInstanceMatrix(exemplar, master) {
+	if (!(exemplar instanceof master)) {
+		throw new Error('Аргумент должен быть экземпляром класса Matrix');
+	}
+}
+
+function checkSizeMatrix(matrixA, matrixB) {
+	if (
+		matrixA.length !== matrixB.length ||
+		matrixA[0].length !== matrixB[0].length
+	) {
+		throw new Error('Матрицы должны быть одинакового размера');
+	}
+}
+
 function Matrix(data, name = 'Matrix') {
 	if (data.length === 0 || data[0].length === 0) {
 		throw new Error('Матрица не должна быть пустой.');
@@ -57,106 +72,124 @@ Matrix.prototype.setName = function (value) {
 };
 
 Matrix.prototype.add = function (matrix) {
-	if (!(matrix instanceof Matrix)) {
-		throw new Error('Аргумент должен быть экземпляром класса Matrix');
-	}
+	checkInstanceMatrix(matrix, Matrix);
 
-	if (this.rows !== matrix.rows || this.cols !== matrix.cols) {
-		throw new Error('Матрицы должны быть одинакового размера');
-	}
+	const data = this.getData();
+	const matrixData = matrix.getData();
+
+	checkSizeMatrix(data, matrixData);
+
+	const rows = this.getRows();
+	const cols = this.getCols();
 
 	const result = [];
-	for (let i = 0; i < this.rows; i++) {
+	for (let i = 0; i < rows; i++) {
 		result[i] = [];
-		for (let j = 0; j < this.cols; j++) {
-			result[i][j] = this.data[i][j] + matrix.data[i][j];
+		for (let j = 0; j < cols; j++) {
+			result[i][j] = data[i][j] + matrixData[i][j];
 		}
 	}
 
-	return new Matrix(result, this.name);
+	const name = this.getName();
+
+	return new Matrix(result, name);
 };
 
 Matrix.prototype.subtract = function (matrix) {
-	if (!(matrix instanceof Matrix)) {
-		throw new Error('Аргумент должен быть экземпляром класса Matrix');
-	}
+	checkInstanceMatrix(matrix, Matrix);
 
-	if (this.rows !== matrix.rows || this.cols !== matrix.cols) {
-		throw new Error('Матрицы должны быть одинакового размера');
-	}
+	const data = this.getData();
+	const matrixData = matrix.getData();
+
+	checkSizeMatrix(data, matrixData);
+
+	const rows = this.getRows();
+	const cols = this.getCols();
 
 	const result = [];
-	for (let i = 0; i < this.rows; i++) {
+	for (let i = 0; i < rows; i++) {
 		result[i] = [];
-		for (let j = 0; j < this.cols; j++) {
-			result[i][j] = this.data[i][j] - matrix.data[i][j];
+		for (let j = 0; j < cols; j++) {
+			result[i][j] = data[i][j] - matrixData[i][j];
 		}
 	}
 
-	return new Matrix(result, this.name);
+	const name = this.getName();
+
+	return new Matrix(result, name);
 };
 
 Matrix.prototype.multiply = function (matrix) {
-	if (!(matrix instanceof Matrix)) {
-		throw new Error('Аргумент должен быть экземпляром класса Matrix');
-	}
+	checkInstanceMatrix(matrix, Matrix);
 
-	if (this.cols !== matrix.rows) {
+	if (this.getCols() !== matrix.getRows()) {
 		throw new Error(
 			'Количество столбцов первой матрицы должно быть равно количеству строк второй.'
 		);
 	}
 
+	const data = this.getData();
+	const dataRows = this.getRows();
+	const dataCols = this.getCols();
+	const matrixData = matrix.getData();
+	const matrixCols = matrix.getCols();
+
 	const result = [];
-	for (let i = 0; i < this.rows; i++) {
+	for (let i = 0; i < dataRows; i++) {
 		result[i] = [];
-		for (let j = 0; j < matrix.cols; j++) {
+		for (let j = 0; j < matrixCols; j++) {
 			let sum = 0;
-			for (let k = 0; k < this.cols; k++) {
-				sum += this.data[i][k] * matrix.data[k][j];
+			for (let k = 0; k < dataCols; k++) {
+				sum += data[i][k] * matrixData[k][j];
 			}
 			result[i][j] = sum;
 		}
 	}
 
-	return new Matrix(result, this.name);
+	const name = this.getName();
+
+	return new Matrix(result, name);
 };
 
 Matrix.prototype.transpose = function () {
-	const result = [];
+	const data = this.getData();
+	const rows = this.getRows();
+	const cols = this.getCols();
 
-	for (let i = 0; i < this.cols; i++) {
+	const result = [];
+	for (let i = 0; i < cols; i++) {
 		result[i] = [];
-		for (let j = 0; j < this.rows; j++) {
-			result[i][j] = this.data[j][i];
+		for (let j = 0; j < rows; j++) {
+			result[i][j] = data[j][i];
 		}
 	}
 
-	return new Matrix(result, this.name);
+	const name = this.getName();
+
+	return new Matrix(result, name);
 };
 
 Matrix.prototype.clone = function () {
-	const copied = [];
-	for (let i = 0; i < this.rows; i++) {
-		copied[i] = [];
-		for (let j = 0; j < this.cols; j++) {
-			copied[i][j] = this.data[i][j];
-		}
-	}
+	const data = this.getData();
+	const name = this.getName();
 
-	return new Matrix(copied, this.name);
+	return new Matrix(data, name);
 };
 
 Matrix.prototype.toString = function () {
+	const data = this.getData();
+	const rows = this.getRows();
+	const cols = this.getCols();
+
 	let str = '';
-	for (let i = 0; i < this.rows; i++) {
-		for (let j = 0; j < this.cols; j++) {
-			str += this.data[i][j];
-			if (j < this.cols - 1) {
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			str += data[i][j];
+			if (j < cols - 1) {
 				str += ' ';
 			}
 		}
-		if (i < this.rows - 1) {
+		if (i < rows - 1) {
 			str += '\n';
 		}
 	}
