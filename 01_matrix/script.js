@@ -1,3 +1,14 @@
+function cloneMatrix(matrix) {
+	const matrixCopy = [];
+	for (let i = 0; i < matrix.length; i++) {
+		matrixCopy[i] = [];
+		for (let j = 0; j < matrix[i].length; j++) {
+			matrixCopy[i][j] = matrix[i][j];
+		}
+	}
+	return matrixCopy;
+}
+
 function checkInstanceMatrix(exemplar, master) {
 	if (!(exemplar instanceof master)) {
 		throw new Error('Аргумент должен быть экземпляром класса Matrix');
@@ -14,12 +25,12 @@ function checkSizeMatrix(matrixA, matrixB) {
 }
 
 function Matrix(data, name = 'Matrix') {
-	if (data.length === 0 || data[0].length === 0) {
-		throw new Error('Матрица не должна быть пустой.');
-	}
-
 	if (!Array.isArray(data) || !Array.isArray(data[0])) {
 		throw new Error('Матрица должна быть двумерным массивом.');
+	}
+
+	if (data.length === 0 || data[0].length === 0) {
+		throw new Error('Матрица не должна быть пустой.');
 	}
 
 	for (let i = 0; i < data.length; i++) {
@@ -30,21 +41,17 @@ function Matrix(data, name = 'Matrix') {
 		}
 	}
 
-	this.data = [];
-	for (let i = 0; i < data.length; i++) {
-		this.data[i] = [];
-		for (let j = 0; j < data[0].length; j++) {
-			this.data[i][j] = data[i][j];
-		}
-	}
+	const rows = data.length;
+	const cols = data[0].length;
 
-	this.rows = data.length;
-	this.cols = data[0].length;
+	this.data = cloneMatrix(data);
+	this.rows = rows;
+	this.cols = cols;
 	this.name = name;
 }
 
 Matrix.prototype.getData = function () {
-	return this.data;
+	return cloneMatrix(this.data);
 };
 
 Matrix.prototype.getRows = function () {
@@ -90,9 +97,10 @@ Matrix.prototype.add = function (matrix) {
 		}
 	}
 
-	const name = this.getName();
+	const dataName = this.getName();
+	const matrixName = matrix.getName();
 
-	return new Matrix(result, name);
+	return new Matrix(result, `${dataName} + ${matrixName}`);
 };
 
 Matrix.prototype.subtract = function (matrix) {
@@ -114,9 +122,10 @@ Matrix.prototype.subtract = function (matrix) {
 		}
 	}
 
-	const name = this.getName();
+	const dataName = this.getName();
+	const matrixName = matrix.getName();
 
-	return new Matrix(result, name);
+	return new Matrix(result, `${dataName} - ${matrixName}`);
 };
 
 Matrix.prototype.multiply = function (matrix) {
@@ -146,9 +155,10 @@ Matrix.prototype.multiply = function (matrix) {
 		}
 	}
 
-	const name = this.getName();
+	const dataName = this.getName();
+	const matrixName = matrix.getName();
 
-	return new Matrix(result, name);
+	return new Matrix(result, `${dataName} * ${matrixName}`);
 };
 
 Matrix.prototype.transpose = function () {
