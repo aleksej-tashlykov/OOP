@@ -82,8 +82,20 @@ Vector.prototype.getEnd = function () {
 };
 
 Vector.prototype.getCoords = function () {
-	const start = this.getStart().getCoords();
-	const end = this.getEnd().getCoords();
+	const startPoint = this.getStart();
+	const endPoint = this.getEnd();
+
+	const start = {
+		x: startPoint.getX(),
+		y: startPoint.getY(),
+		name: startPoint.getName(),
+	};
+
+	const end = {
+		x: endPoint.getX(),
+		y: endPoint.getY(),
+		name: endPoint.getName(),
+	};
 
 	return { start, end };
 };
@@ -91,15 +103,17 @@ Vector.prototype.getCoords = function () {
 Vector.prototype.add = function (vector) {
 	checkInstanceClass(vector, Vector);
 
-	const dataCoords = this.getCoords();
-	const vectorCoords = vector.getCoords();
+	const dataCoordsStart = this.getStart();
+	const vectorCoordsStart = vector.getStart();
+	const dataCoordsEnd = this.getEnd();
+	const vectorCoordsEnd = vector.getEnd();
 
-	const startX = dataCoords.start.x + vectorCoords.start.x;
-	const startY = dataCoords.start.y + vectorCoords.start.y;
-	const endX = dataCoords.end.x + vectorCoords.end.x;
-	const endY = dataCoords.end.y + vectorCoords.end.y;
-	const startName = `${dataCoords.start.name}${vectorCoords.start.name}`;
-	const endName = `${dataCoords.end.name}${vectorCoords.end.name}`;
+	const startX = dataCoordsStart.getX() + vectorCoordsStart.getX();
+	const startY = dataCoordsStart.getY() + vectorCoordsStart.getY();
+	const endX = dataCoordsEnd.getX() + vectorCoordsEnd.getX();
+	const endY = dataCoordsEnd.getY() + vectorCoordsEnd.getY();
+	const startName = `${dataCoordsStart.getName()}${vectorCoordsStart.getName()}`;
+	const endName = `${dataCoordsEnd.getName()}${vectorCoordsEnd.getName()}`;
 
 	const start = new Point(startX, startY, startName);
 	const end = new Point(endX, endY, endName);
@@ -110,15 +124,17 @@ Vector.prototype.add = function (vector) {
 Vector.prototype.subtract = function (vector) {
 	checkInstanceClass(vector, Vector);
 
-	const dataCoords = this.getCoords();
-	const vectorCoords = vector.getCoords();
+	const dataCoordsStart = this.getStart();
+	const vectorCoordsStart = vector.getStart();
+	const dataCoordsEnd = this.getEnd();
+	const vectorCoordsEnd = vector.getEnd();
 
-	const startX = dataCoords.start.x - vectorCoords.start.x;
-	const startY = dataCoords.start.y - vectorCoords.start.y;
-	const endX = dataCoords.end.x - vectorCoords.end.x;
-	const endY = dataCoords.end.y - vectorCoords.end.y;
-	const startName = `${dataCoords.start.name}${vectorCoords.start.name}`;
-	const endName = `${dataCoords.end.name}${vectorCoords.end.name}`;
+	const startX = dataCoordsStart.getX() - vectorCoordsStart.getX();
+	const startY = dataCoordsStart.getY() - vectorCoordsStart.getY();
+	const endX = dataCoordsEnd.getX() - vectorCoordsEnd.getX();
+	const endY = dataCoordsEnd.getY() - vectorCoordsEnd.getY();
+	const startName = `${dataCoordsStart.getName()}${vectorCoordsStart.getName()}`;
+	const endName = `${dataCoordsEnd.getName()}${vectorCoordsEnd.getName()}`;
 
 	const start = new Point(startX, startY, startName);
 	const end = new Point(endX, endY, endName);
@@ -129,14 +145,15 @@ Vector.prototype.subtract = function (vector) {
 Vector.prototype.multiply = function (value) {
 	checkTypeCoord(value);
 
-	const dataCoords = this.getCoords();
+	const dataCoordsStart = this.getStart();
+	const dataCoordsEnd = this.getEnd();
 
-	const startX = dataCoords.start.x * value;
-	const startY = dataCoords.start.y * value;
-	const endX = dataCoords.end.x * value;
-	const endY = dataCoords.end.y * value;
-	const startName = `${dataCoords.start.name}×${value}`;
-	const endName = `${dataCoords.end.name}×${value}`;
+	const startX = dataCoordsStart.getX() * value;
+	const startY = dataCoordsStart.getY() * value;
+	const endX = dataCoordsEnd.getX() * value;
+	const endY = dataCoordsEnd.getY() * value;
+	const startName = `${dataCoordsStart.getName()}×${value}`;
+	const endName = `${dataCoordsEnd.getName()}×${value}`;
 
 	const start = new Point(startX, startY, startName);
 	const end = new Point(endX, endY, endName);
@@ -149,14 +166,15 @@ Vector.prototype.divide = function (value) {
 		throw new Error('Делить на ноль нельзя.');
 	}
 
-	const dataCoords = this.getCoords();
+	const dataCoordsStart = this.getStart();
+	const dataCoordsEnd = this.getEnd();
 
-	const startX = dataCoords.start.x / value;
-	const startY = dataCoords.start.y / value;
-	const endX = dataCoords.end.x / value;
-	const endY = dataCoords.end.y / value;
-	const startName = `${dataCoords.start.name}/${value}`;
-	const endName = `${dataCoords.end.name}/${value}`;
+	const startX = dataCoordsStart.getX() / value;
+	const startY = dataCoordsStart.getY() / value;
+	const endX = dataCoordsEnd.getX() / value;
+	const endY = dataCoordsEnd.getY() / value;
+	const startName = `${dataCoordsStart.getName()}/${value}`;
+	const endName = `${dataCoordsEnd.getName()}/${value}`;
 
 	const start = new Point(startX, startY, startName);
 	const end = new Point(endX, endY, endName);
@@ -168,7 +186,7 @@ Vector.prototype.toString = function () {
 	const start = this.getStart();
 	const end = this.getEnd();
 	const name = `${start.getName()}${end.getName()}`;
-	return `Vector ${name} { start: ${start.toString()}, end: ${this.end.toString()} }`;
+	return `Vector ${name} { start: ${start.toString()}, end: ${end.toString()} }`;
 };
 
 try {
